@@ -17,20 +17,6 @@ For those with different versions of CPLEX, problems may happen when calling CPL
 
 Users who do not wish to use CPLEX or to modify the source code can choose the Model Only button in order to build a .lp file (no requirement to use CPLEX) which they can then solve using the software of their choice.
 
-*-----------------------  Project Maintainer  -------------------------------*
-
-Dr. Lei Sun
-leisun@buffalo.edu
-Praxair Inc.
- 
-*------------------------  Project Web Page  --------------------------------*
-
-
-
-*-------------  Bug Reports / Support / Feature Request  --------------------*
-See web page or email leisun@buffalo.edu
-
-
 *----------------------  TSP LP Solver  ------------------------------*
 
 TSP LP Solver builds linear programming (LP) models for the traveling salesman problem and calls CPLEX to solve them as LPs. The interface has been designed to run multiple replications of the chosen problem and run control settings at a time. With this tool, users can: (1) randomly generate or read a TSP cost matrix in multiple ways; (2) directly solve the TSP or only build the LP models; (3) adjust CPLEX settings for different tests; (4) show solutions (optimal objective, variables, routes) in different formats. The MTZ model is available for the purposes of verifying the correctness of the solutions obtained using our LP model. It is solved as an Integer Program, and only its objective function value is displayed.
