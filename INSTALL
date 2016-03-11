@@ -1,0 +1,43 @@
+*----------------- Installation -----------------*
+
+\Debug\TSPsolvers.exe
+
+*----------------- Third-party software dependencies -----------------*
+
+TSP LP Solver is written in C# with .NET framework 4 and calls CPLEX 12.5 to solve models. IBM ILOG CPLEX Optimization Studio 12.5 is optional.
+
+For those with CPLEX 12.5, all functions in this program are available.
+
+For those with different versions of CPLEX, problems may happen when calling CPLEX to solve (e.g. 'Unable to load DLL cplex125'). If so, users need to adjust references in the source code to rebuild the program.
+
+Users who do not wish to use CPLEX or to modify the source code can choose the Model Only button in order to build a .lp file (no requirement to use CPLEX) which they can then solve using the software of their choice.
+
+*----------------- Interface Instructions -----------------*
+
+TSP LP Solver builds linear programming (LP) models for the traveling salesman problem and calls CPLEX to solve them as LPs. The interface has been designed to run multiple replications of the chosen problem and run control settings at a time. With this tool, users can: (1) randomly generate or read a TSP cost matrix in multiple ways; (2) directly solve the TSP or only build the LP models; (3) adjust CPLEX settings for different tests; (4) show solutions (optimal objective, variables, routes) in different formats. The MTZ model is available for the purposes of verifying the correctness of the solutions obtained using our LP model. It is solved as an Integer Program, and only its objective function value is displayed.
+
+1. Data
+
+There are two ways to input data to the solver: randomly generate and read cost data from files. For either way, users can check “Export all replications in XML format” to export cost files in XML format for every replication.
+
+Randomly generating data supports the testing of multiple replications of a problem in a single run. Users input # of Cities (number of cities) and # of Replications. Cost values are generated based on either Euclidean distances or uniformly distributed random numbers. If the Euclidean distance option is chosen, the program will first randomly generated coordinates within a (0, 100) x (0, 100) square plane, and then randomly generate costs within the given percentage range of Euclidean distances. If (absolute) interval limits is chosen, the program will directly randomly generate costs within the given range, not based on Euclidean distances. Other options include whether the cost matrix is asymmetric or not (checked or unchecked), whether the cost matrix is integer or not (checked or unchecked), and whether the triangle inequality holds or is not required (checked or unchecked).
+
+Reading cost files supports XML and CSV formats as input file formats. The required data format can be found in the attached Sample.xml and Sample.csv. The XML data format follows the classic TSPLIB.
+
+2. Modeler Settings
+
+If the Model Only button is chosen, the program will build an .lp file without the requirement to use CPLEX. If the Miller-Tucker-Zemlin (MTZ) model is chosen to be solved, the program will call CPLEX to build and solve the model and display the optimal objective value for reference. If the N5 LP model is chosen to be solved, the program will call CPLEX to build and solve the model and display the solution time, optimal objective value and other solution information depending on which are chosen among the show y solutions, show x solutions and show routes options.
+
+3. CPLEX Settings
+
+If users have the correct CPLEX settings on their machines, they can adjust CPLEX parameters with this tool and solve the model with different algorithmic settings. For details of each adjustable parameter, please refer to a CPLEX Parameters Reference from IBM (http://www-01.ibm.com/support/knowledgecenter/SSSA5P_12.6.1/ilog.odms.studio.help/pdf/paramcplex.pdf).
+
+4. Results
+
+All output files are located in the Results subfolder of the folder containing the TSP LP Solver executable (TSPsolvers.exe), including the XML cost files, .lp files and solution text files.
+
+The solution text file is named as “Tests on #-node random cases.txt” for randomly generated problems and ”Tests on given cost files.txt” for tests with reading cost files. This file may include the MTZ objective value; and the N5 LP model objective value, solution time, number of variables, number of constraints, values of the non-zero y variables, values of the non-zero x variables, and optimal routes.
+
+The optimal routes are retrieved using our iterative elimination procedure. In the case that too many routes are involved in a fractional solution (e.g. when a non-crossover interiorpoint method stops on a face due to alternate optima), the program will display all or a subset of the routes  for reference. To display all routes, users need to adjust the source code. We provide two versions of the iterative elimination in the source code: SplitRoutesByY() is a greedy-type implementation; EnumerSplitByY() involves an enumeration scheme for “tracing” the TSP paths through the y-variables with positive values in the solution. EnumerSplitByY() is more robust to avoid failure due to numerical issues but is time-consuming. Besides these two methods, users can also apply perturbation means (Mangasarian, 1984) to make one the alternate optima the unique LP optimum, or a polynomial-time interior-point method which stops at a vertex optimum such as described in Wright (1997).
+
+If any one of the following two cases are found, the program will create XML cost files for records for further analysis: 1.) MTZ and N5 LP models result in different optimal objective values (this has never happened in our more than 1 million tests); 2.) There are many optimal routes and the program only displays a portion of them.
